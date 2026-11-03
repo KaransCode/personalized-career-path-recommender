@@ -1,0 +1,24 @@
+Priya Sharma
+
+Machine Learning Engineer
+Pune, India | priya.sharma.sample@example.com
+
+2.5 years of experience
+
+Summary
+Machine Learning Engineer focused on deep learning and computer vision,
+with production experience in PyTorch and Kubernetes-based deployment.
+
+Experience
+Machine Learning Engineer - VisionWorks AI - 2022-2024
+Developed deep learning models with PyTorch and Keras for computer vision
+tasks. Containerized services using Docker and Kubernetes. Used Git for
+version control and Linux for deployment servers.
+
+Software Engineer Intern - CodeForge Labs - 2021-2022
+Built REST APIs using Django and Flask, and worked with PostgreSQL and
+MongoDB databases. Practiced Agile development.
+
+Skills
+Python, Deep Learning, Computer Vision, PyTorch, Keras, Docker,
+Kubernetes, Django, Flask, PostgreSQL, MongoDB, Git, Linux, Agile

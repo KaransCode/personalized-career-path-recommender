@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Role · Career Path Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="assets/theme.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap narrow" id="app"></main>
+
+<script src="assets/app.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+CP.renderNav();
+const { h } = CP;
+const $ = (id) => document.getElementById(id);
+const app = $("app");
+
+const TABS = [["overview", "Overview"], ["skills", "Skills"], ["roadmap", "Roadmap"], ["salary", "Salary"], ["path", "Career path"]];
+let role, allRoles, meta, trends = null, guide = null, years = CP.getYears(), unit = "year", tab = "overview";
+const hasProfile = !!CP.getProfile();
+const hotMark = (s) => (CP.isHotSkill(trends, s) ? h("span", { class: "up", title: "Trending skill", "aria-label": "trending" }, " ▲") : null);
+
+(async function init() {
+  const name = new URLSearchParams(location.search).get("name");
+  app.replaceChildren(CP.skeletons(3, 120));
+  try {
+    const [data, t, g] = await Promise.all([CP.getRoles(), CP.getTrends().catch(() => null), CP.getGuide().catch(() => null)]);
+    allRoles = data.roles; meta = data.meta; trends = t; guide = g;
+  } catch (err) {
+    app.replaceChildren(h("div", { class: "empty" }, h("p", { class: "err" }, err.message), h("button", { class: "btn", onclick: () => location.reload() }, "Try again")));
+    return;
+  }
+  role = allRoles.find((r) => r.name === name);
+  if (!role) {
+    app.replaceChildren(h("div", { class: "empty" }, h("p", {}, name ? `We don’t have a role called “${name}”.` : "No role selected."),
+      h("a", { class: "btn", href: "explore.html" }, "Browse all roles")));
+    return;
+  }
+  document.title = `${role.name} · Career Path Recommender`;
+  const fromHash = location.hash.slice(1);
+  if (TABS.some(([id]) => id === fromHash)) tab = fromHash;
+  buildShell();
+  renderTabs();
+  renderPanel();
+  window.addEventListener("hashchange", () => { const t2 = location.hash.slice(1); if (TABS.some(([id]) => id === t2) && t2 !== tab) selectTab(t2, false); });
+})();
+
+function buildShell() {
+  app.replaceChildren(
+    h("p", { class: "crumbs" }, h("a", { href: "explore.html" }, "Explore roles"), " / ", role.name),
+    h("div", { style: "display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px" },
+      h("h1", { style: "margin:0" }, role.name), h("span", { class: "tag" }, role.category), CP.trendTag(role.trend)),
+    h("p", { class: "lede", style: "margin-bottom:10px" }, role.overview),
+    h("div", { style: "display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap" },
+      h("p", { id: "headPay", style: "font-weight:500;margin:0" }),
+      h("button", { id: "targetBtn", class: "btn ghost small", type: "button", onclick: toggleTarget })),
+    h("div", { class: "tabs", id: "tabs", role: "tablist" }),
+    h("div", { id: "panel", class: "panel" }));
+  renderHead();
+}
+
+function toggleTarget() {
+  const isTarget = CP.getTarget() === role.name;
+  CP.setTarget(isTarget ? null : role.name);
+  CP.toast(isTarget ? "Target role cleared" : `Target role set: ${role.name}`);
+  renderHead();
+  if (tab === "roadmap") renderPanel();
+}
+
+function renderHead() {
+  const pay = CP.payAt(role, years);
+  $("headPay").textContent = `${years === 0 ? "As a fresher" : `At ${CP.fmtYears(years)}`}: ${CP.fmtRange(pay)}`;
+  const isTarget = CP.getTarget() === role.name;
+  $("targetBtn").textContent = isTarget ? "✓ My target role" : "Set as my target role";
+  $("targetBtn").setAttribute("aria-pressed", String(isTarget));
+}
+
+function renderTabs() {
+  $("tabs").replaceChildren(...TABS.map(([id, label]) =>
+    h("button", { type: "button", role: "tab", "aria-selected": String(id === tab), onclick: () => selectTab(id, true) }, label)));
+}
+function selectTab(id, pushHash) {
+  tab = id;
+  if (pushHash) history.replaceState(null, "", "#" + id);
+  renderTabs();
+  const p = $("panel");
+  p.classList.remove("panel"); void p.offsetWidth; p.classList.add("panel");   // replay the fade
+  renderPanel();
+}
+function renderPanel() {
+  $("panel").replaceChildren(({ overview: panelOverview, skills: panelSkills, roadmap: panelRoadmap, salary: panelSalary, path: panelPath })[tab]());
+}
+const needResume = (msg) => h("div", { class: "banner", style: "margin-top:24px" }, h("span", {}, msg), h("a", { class: "btn small", href: "index.html" }, "Upload resume"));
+
+/* ---------- overview ---------- */
+function panelOverview() {
+  const sets = CP.skillSets(), cov = CP.coverage(role.required_skills, sets), t = role.trend;
+  const hot = role.required_skills.filter((s) => CP.isHotSkill(trends, s));
+  return h("div", {},
+    h("p", { style: "max-width:62ch" }, role.description),
+    t ? h("div", { class: "outlook" },
+      h("div", {}, h("div", { class: "muted small" }, "Market outlook (India)"), h("div", { style: "display:flex;align-items:center;gap:10px;margin-top:4px" }, CP.pips(t.outlook), CP.trendTag(t))),
+      h("p", { class: "small muted", style: "margin:0;flex:1;min-width:220px" }, t.note + (hot.length ? ` Trending skills here: ${hot.join(", ")}.` : ""))) : null,
+    h("h2", { style: "margin-top:28px" }, "What you’d do"),
+    h("ul", { class: "list" }, role.responsibilities.map((r) => h("li", {}, r))),
+    h("h2", { style: "margin-top:28px" }, "Common tools"),
+    h("ul", { class: "chips" }, role.tools.map((x) => h("li", {}, h("span", { class: "chip plain" }, x)))),
+    hasProfile
+      ? h("div", { style: "margin-top:32px" },
+          h("h2", {}, "How you match"),
+          h("p", { class: "muted", style: "margin-bottom:10px" }, `You have ${cov.have} of ${cov.total} required skills.`),
+          CP.rail(cov),
+          h("p", { style: "margin-top:12px;display:flex;gap:8px;flex-wrap:wrap" },
+            h("button", { class: "btn ghost small", type: "button", onclick: () => selectTab("skills", true) }, "See skill breakdown"),
+            h("button", { class: "btn ghost small", type: "button", onclick: () => selectTab("roadmap", true) }, "Open roadmap")))
+      : needResume("Upload a resume to see how your skills match this role."));
+}
+
+/* ---------- skills ---------- */
+function panelSkills() {
+  if (!hasProfile) {
+    return h("div", {},
+      h("p", { class: "muted" }, "Skills this role usually asks for (▲ marks a trending skill):"),
+      h("ul", { class: "chips" }, role.required_skills.map((s) => h("li", {}, h("span", { class: "chip plain" }, s, hotMark(s))))),
+      needResume("Upload a resume to see which of these you already have."));
+  }
+  const sets = CP.skillSets(), cov = CP.coverage(role.required_skills, sets);
+  const have = role.required_skills.filter((s) => sets.base.has(s));
+  return h("div", {},
+    h("p", { class: "muted", style: "margin-bottom:10px" }, `You have ${cov.have} of ${cov.total} required skills${cov.plan ? `, ${cov.plan} planned` : ""}. ▲ marks a trending skill.`),
+    CP.rail(cov),
+    h("h2", { style: "margin-top:28px" }, "You already have"),
+    have.length ? h("ul", { class: "chips" }, have.map((s) => h("li", {}, h("span", { class: "chip" }, s, hotMark(s))))) : h("p", { class: "muted" }, "None of the required skills yet."),
+    h("h2", { style: "margin-top:28px" }, "To learn"),
+    cov.missing.length
+      ? [h("p", { class: "small muted" }, "Click a skill to add it to your learning plan. The match bar updates straight away."),
+         h("ul", { class: "chips" }, cov.missing.map((m) => h("li", {},
+           h("button", { class: "chip " + (m.planned ? "planned" : "todo"), type: "button", "aria-pressed": String(m.planned),
+             onclick: () => { CP.toggleLearn(m.skill); renderPanel(); } }, (m.planned ? "✓ " : "+ ") + m.skill, hotMark(m.skill)))))]
+      : h("p", { style: "color:var(--ok)" }, "Nothing missing. You have every required skill."));
+}
+
+/* ---------- roadmap ---------- */
+function panelRoadmap() {
+  if (!hasProfile) return h("div", {}, h("p", { class: "muted" }, "A roadmap orders the skills you’re missing so prerequisites come first, with a rough time estimate."), needResume("Upload a resume to build your roadmap for this role."));
+  const steps = CP.buildRoadmap(role, CP.skillSets(), guide);
+  if (!steps.length) return h("div", { class: "empty" }, h("p", { style: "color:var(--ok);margin:0" }, `You already have every skill we list for ${role.name}. Build projects that show them off.`));
+  const total = steps.reduce((a, s) => a + s.weeks, 0);
+  return h("div", {},
+    h("div", { class: "estimate" }, `About ${total} week${total === 1 ? "" : "s"}`),
+    h("p", { class: "muted small", style: "margin:0" }, `${steps.length} skill${steps.length === 1 ? "" : "s"} to learn, in a sensible order. Rough estimates at a steady part-time pace.`),
+    h("div", { class: "timeline", role: "img", "aria-label": "Learning timeline, segment length is proportional to weeks" },
+      steps.map((s) => h("span", { style: `flex:${s.weeks}`, title: `${s.skill}: ${s.weeks} weeks` }))),
+    h("ol", { class: "steps-list" }, steps.map((s) => h("li", {},
+      h("div", {}, h("div", { class: "nm" }, s.skill, hotMark(s.skill)),
+        h("div", { class: "sub" }, `${s.weeks} week${s.weeks === 1 ? "" : "s"}` + (s.after.length ? `. Builds on ${s.after.join(", ")}.` : "."))),
+      h("button", { class: "btn ghost small", type: "button", onclick: () => { CP.markLearned(s.skill); CP.toast(`Marked ${s.skill} as learned`); renderPanel(); } }, "Mark as learned")))),
+    h("p", { class: "note" }, "Marking a skill as learned adds it to your profile, so your match scores update everywhere. Time estimates are a rough guide and depend on your background."));
+}
+
+/* ---------- salary ---------- */
+function panelSalary() {
+  const dyn = h("div", { id: "salaryDyn" });
+  const exp = CP.expControl((y) => { years = y; renderSalaryDyn(); renderHead(); });
+  const unitSeg = h("div", { class: "seg", role: "group", "aria-label": "Pay unit" },
+    [["year", "Per year"], ["month", "Per month"]].map(([u, label]) =>
+      h("button", { type: "button", "aria-pressed": String(u === unit), "data-u": u,
+        onclick: () => { unit = u; unitSeg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.u === u))); renderSalaryDyn(); } }, label)));
+  window.__exp = exp;   // lets a band click move the slider
+  const wrap = h("div", {},
+    h("div", { class: "toolbar" }, exp, unitSeg),
+    dyn,
+    h("p", { class: "note" }, `${meta.note} Ranges reflect ${meta.region}, in ${meta.currency}.`));
+  setTimeout(renderSalaryDyn, 0);
+  return wrap;
+}
+
+function renderSalaryDyn() {
+  const dyn = $("salaryDyn");
+  if (!dyn) return;
+  const idx = CP.bandIndex(years), bands = meta.bands;
+  const real = role.salary_lpa.filter(Boolean);
+  const scale = Math.max(...real.map((b) => b[1])) * 1.05;
+  const pay = role.salary_lpa[idx];
+
+  dyn.replaceChildren(
+    h("div", { class: "estimate" }, CP.fmtRange(pay, unit)),
+    h("p", { class: "muted small", style: "margin-bottom:18px" },
+      years === 0 ? "Expected range as a fresher" : `Expected range at ${CP.fmtYears(years)} (${bands[idx]} band)`),
+    h("div", { class: "card-chart", style: "margin-bottom:22px" }, h("h2", {}, "Pay growth with experience"), h("p", { class: "sub" }, "Shaded area is the typical range. The dashed line is your experience."),
+      Charts.salaryCurve(role.salary_lpa, bands, years)),
+    h("div", { class: "bars" }, bands.map((label, i) => {
+      const b = role.salary_lpa[i];
+      return h("button", { type: "button", class: "bar" + (i === idx ? " active" : "") + (b ? "" : " na"), "aria-pressed": String(i === idx),
+        title: "Click to set your experience to this band",
+        onclick: () => { years = CP.BAND_STARTS[i]; window.__exp.setYears(years); renderSalaryDyn(); renderHead(); } },
+        h("span", {}, label),
+        h("span", { class: "track" }, b ? h("span", { class: "fill", style: `left:${(b[0] / scale) * 100}%;width:${((b[1] - b[0]) / scale) * 100}%` }) : null),
+        h("span", { class: "val" }, b ? CP.fmtRange(b, unit) : "Not typical at this level"));
+    })));
+}
+
+/* ---------- career path ---------- */
+function panelPath() {
+  const link = (name) => {
+    const r = allRoles.find((x) => x.name === name);
+    const pay = r && CP.payAt(r, years);
+    return h("a", { href: CP.roleUrl(name) }, h("span", {}, name, " ", r ? CP.trendTag(r.trend) : null), h("span", { class: "muted small" }, pay ? CP.fmtRange(pay) : ""));
+  };
+  const col = (title, names, emptyText) => h("div", {}, h("h2", {}, title),
+    names.length ? h("div", { class: "linkrow" }, names.map(link)) : h("p", { class: "muted" }, emptyText));
+  return h("div", {},
+    h("p", { class: "muted", style: "margin-bottom:22px" }, `Pay shown ${years === 0 ? "as a fresher" : `at ${CP.fmtYears(years)}`}. Typical moves, not guaranteed ones.`),
+    h("div", { class: "cols" },
+      col("Often comes before", role.led_from, "This is usually a starting point."),
+      col("Can lead to", role.leads_to, "This is the top of this ladder in our data.")));
+}
+</script>
+</body>
+</html>

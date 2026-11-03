@@ -1,0 +1,446 @@
+{
+ "_note": "Rough learning-time estimates (weeks at a steady part-time pace) and prerequisites. Editorial, edit freely.",
+ "skills": {
+  "python": {
+   "weeks": 6,
+   "after": []
+  },
+  "sql": {
+   "weeks": 4,
+   "after": []
+  },
+  "excel": {
+   "weeks": 2,
+   "after": []
+  },
+  "pandas": {
+   "weeks": 3,
+   "after": [
+    "python"
+   ]
+  },
+  "numpy": {
+   "weeks": 2,
+   "after": [
+    "python"
+   ]
+  },
+  "statistics": {
+   "weeks": 6,
+   "after": []
+  },
+  "machine learning": {
+   "weeks": 8,
+   "after": [
+    "python",
+    "statistics"
+   ]
+  },
+  "deep learning": {
+   "weeks": 8,
+   "after": [
+    "machine learning"
+   ]
+  },
+  "natural language processing": {
+   "weeks": 6,
+   "after": [
+    "machine learning"
+   ]
+  },
+  "computer vision": {
+   "weeks": 6,
+   "after": [
+    "deep learning"
+   ]
+  },
+  "tensorflow": {
+   "weeks": 4,
+   "after": [
+    "deep learning"
+   ]
+  },
+  "pytorch": {
+   "weeks": 4,
+   "after": [
+    "deep learning"
+   ]
+  },
+  "scikit-learn": {
+   "weeks": 3,
+   "after": [
+    "python",
+    "pandas"
+   ]
+  },
+  "data analysis": {
+   "weeks": 4,
+   "after": [
+    "excel"
+   ]
+  },
+  "data visualization": {
+   "weeks": 3,
+   "after": [
+    "data analysis"
+   ]
+  },
+  "tableau": {
+   "weeks": 3,
+   "after": [
+    "data visualization"
+   ]
+  },
+  "power bi": {
+   "weeks": 3,
+   "after": [
+    "data visualization"
+   ]
+  },
+  "etl": {
+   "weeks": 3,
+   "after": [
+    "sql"
+   ]
+  },
+  "spark": {
+   "weeks": 5,
+   "after": [
+    "python",
+    "sql"
+   ]
+  },
+  "hadoop": {
+   "weeks": 4,
+   "after": [
+    "linux"
+   ]
+  },
+  "airflow": {
+   "weeks": 3,
+   "after": [
+    "python"
+   ]
+  },
+  "aws": {
+   "weeks": 5,
+   "after": []
+  },
+  "azure": {
+   "weeks": 5,
+   "after": []
+  },
+  "gcp": {
+   "weeks": 5,
+   "after": []
+  },
+  "docker": {
+   "weeks": 3,
+   "after": [
+    "linux"
+   ]
+  },
+  "kubernetes": {
+   "weeks": 5,
+   "after": [
+    "docker"
+   ]
+  },
+  "linux": {
+   "weeks": 3,
+   "after": []
+  },
+  "git": {
+   "weeks": 1,
+   "after": []
+  },
+  "java": {
+   "weeks": 8,
+   "after": []
+  },
+  "flask": {
+   "weeks": 2,
+   "after": [
+    "python",
+    "rest api"
+   ]
+  },
+  "django": {
+   "weeks": 4,
+   "after": [
+    "python"
+   ]
+  },
+  "rest api": {
+   "weeks": 2,
+   "after": []
+  },
+  "javascript": {
+   "weeks": 6,
+   "after": []
+  },
+  "typescript": {
+   "weeks": 3,
+   "after": [
+    "javascript"
+   ]
+  },
+  "react": {
+   "weeks": 5,
+   "after": [
+    "javascript"
+   ]
+  },
+  "node.js": {
+   "weeks": 4,
+   "after": [
+    "javascript"
+   ]
+  },
+  "kotlin": {
+   "weeks": 5,
+   "after": []
+  },
+  "android development": {
+   "weeks": 6,
+   "after": [
+    "kotlin"
+   ]
+  },
+  "jetpack compose": {
+   "weeks": 3,
+   "after": [
+    "kotlin"
+   ]
+  },
+  "room database": {
+   "weeks": 2,
+   "after": [
+    "kotlin",
+    "sqlite"
+   ]
+  },
+  "mvvm": {
+   "weeks": 2,
+   "after": [
+    "kotlin"
+   ]
+  },
+  "firebase": {
+   "weeks": 2,
+   "after": []
+  },
+  "sqlite": {
+   "weeks": 1,
+   "after": [
+    "sql"
+   ]
+  },
+  "postgresql": {
+   "weeks": 3,
+   "after": [
+    "sql"
+   ]
+  },
+  "mysql": {
+   "weeks": 3,
+   "after": [
+    "sql"
+   ]
+  },
+  "mongodb": {
+   "weeks": 3,
+   "after": []
+  },
+  "neo4j": {
+   "weeks": 3,
+   "after": []
+  },
+  "agile": {
+   "weeks": 1,
+   "after": []
+  },
+  "communication": {
+   "weeks": 4,
+   "after": []
+  },
+  "leadership": {
+   "weeks": 8,
+   "after": [
+    "communication"
+   ]
+  },
+  "generative ai": {
+   "weeks": 4,
+   "after": [
+    "machine learning"
+   ]
+  },
+  "prompt engineering": {
+   "weeks": 2,
+   "after": []
+  },
+  "llm": {
+   "weeks": 3,
+   "after": [
+    "python"
+   ]
+  },
+  "rag": {
+   "weeks": 4,
+   "after": [
+    "llm",
+    "vector databases"
+   ]
+  },
+  "langchain": {
+   "weeks": 3,
+   "after": [
+    "python"
+   ]
+  },
+  "langgraph": {
+   "weeks": 3,
+   "after": [
+    "langchain"
+   ]
+  },
+  "vector databases": {
+   "weeks": 2,
+   "after": [
+    "python"
+   ]
+  },
+  "agentic ai": {
+   "weeks": 5,
+   "after": [
+    "rag"
+   ]
+  },
+  "dbt": {
+   "weeks": 3,
+   "after": [
+    "sql"
+   ]
+  },
+  "snowflake": {
+   "weeks": 3,
+   "after": [
+    "sql"
+   ]
+  },
+  "data modeling": {
+   "weeks": 4,
+   "after": [
+    "sql"
+   ]
+  },
+  "cybersecurity": {
+   "weeks": 8,
+   "after": [
+    "networking",
+    "linux"
+   ]
+  },
+  "networking": {
+   "weeks": 4,
+   "after": []
+  },
+  "siem": {
+   "weeks": 3,
+   "after": [
+    "networking"
+   ]
+  },
+  "incident response": {
+   "weeks": 4,
+   "after": [
+    "cybersecurity"
+   ]
+  },
+  "selenium": {
+   "weeks": 3,
+   "after": [
+    "python"
+   ]
+  },
+  "testing": {
+   "weeks": 3,
+   "after": []
+  },
+  "ci/cd": {
+   "weeks": 2,
+   "after": [
+    "git"
+   ]
+  },
+  "monitoring": {
+   "weeks": 2,
+   "after": [
+    "linux"
+   ]
+  },
+  "terraform": {
+   "weeks": 3,
+   "after": [
+    "aws"
+   ]
+  },
+  "product management": {
+   "weeks": 6,
+   "after": []
+  },
+  "roadmapping": {
+   "weeks": 2,
+   "after": [
+    "product management"
+   ]
+  },
+  "figma": {
+   "weeks": 3,
+   "after": []
+  },
+  "ux research": {
+   "weeks": 4,
+   "after": []
+  },
+  "wireframing": {
+   "weeks": 2,
+   "after": [
+    "figma"
+   ]
+  },
+  "prototyping": {
+   "weeks": 2,
+   "after": [
+    "figma"
+   ]
+  },
+  "css": {
+   "weeks": 3,
+   "after": []
+  },
+  "flutter": {
+   "weeks": 5,
+   "after": [
+    "dart"
+   ]
+  },
+  "dart": {
+   "weeks": 3,
+   "after": []
+  },
+  "state management": {
+   "weeks": 3,
+   "after": [
+    "flutter"
+   ]
+  },
+  "mlops": {
+   "weeks": 4,
+   "after": [
+    "docker"
+   ]
+  }
+ }
+}

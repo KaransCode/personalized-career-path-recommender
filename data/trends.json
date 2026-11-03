@@ -1,0 +1,322 @@
+{
+ "as_of": "2026-11-02",
+ "region": "India",
+ "headline": "AI, security, cloud and data are where hiring is concentrating, while general software roles are more selective.",
+ "themes": [
+  {
+   "title": "AI roles lead the growth lists",
+   "text": "Reports summarising LinkedIn's Jobs on the Rise 2026 for India put AI and GenAI roles at the top of the fastest-growing categories."
+  },
+  {
+   "title": "Employers screen for LLM, RAG and agent skills",
+   "text": "Recruiter search data points to LLM experience, AI agents and retrieval-augmented generation as the most requested AI skills, ahead of the classic ML stack."
+  },
+  {
+   "title": "Cybersecurity demand is regulation-driven",
+   "text": "Security hiring is rising fast, helped by RBI and SEBI rules and the Digital Personal Data Protection Act."
+  },
+  {
+   "title": "Hiring is concentrating, not collapsing",
+   "text": "Traditional IT hiring has slowed in places, while AI, data, cloud, cybersecurity and product engineering stay strong. Fewer fresher openings means projects and hands-on work count for more."
+  },
+  {
+   "title": "AI is becoming a skill, not just a job title",
+   "text": "Companies are adding AI duties to existing software, product and data roles, so adding one AI skill to your current path helps in many places."
+  }
+ ],
+ "roles": {
+  "Generative AI Engineer": {
+   "momentum": "surging",
+   "outlook": 5,
+   "note": "AI and GenAI roles lead the fastest-growing lists for India in 2026."
+  },
+  "Agentic AI Developer": {
+   "momentum": "surging",
+   "outlook": 5,
+   "note": "Agent building is named a defining 2026 trend, and recruiters screen for it."
+  },
+  "Machine Learning Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "AI/ML engineering is among the highest-premium specialisms."
+  },
+  "NLP Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "LLM work is being layered onto many language roles."
+  },
+  "MLOps Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "MLOps appears in most lists of in-demand AI skills."
+  },
+  "Deep Learning Engineer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand, but employers now ask more about LLM skills than classic deep learning."
+  },
+  "Computer Vision Engineer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand in specialised domains."
+  },
+  "AI Research Engineer": {
+   "momentum": "selective",
+   "outlook": 3,
+   "note": "Strong pay, but few openings and a high bar."
+  },
+  "Data Scientist": {
+   "momentum": "steady",
+   "outlook": 4,
+   "note": "Still listed among India's top in-demand jobs, with more focus on applied and GenAI work."
+  },
+  "Data Analyst": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "Frequently listed as a fast-growing entry route in India."
+  },
+  "Business Intelligence Analyst": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand for dashboard and metrics work."
+  },
+  "Data Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "Data platform roles are rebounding alongside AI."
+  },
+  "Analytics Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "Warehouse modelling skills such as dbt are in demand."
+  },
+  "Data Architect": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Senior role, hired selectively."
+  },
+  "Product Analyst": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand in product companies."
+  },
+  "Database Administrator": {
+   "momentum": "steady",
+   "outlook": 2,
+   "note": "Stable but slower-growing than data engineering."
+  },
+  "Cybersecurity Analyst": {
+   "momentum": "surging",
+   "outlook": 5,
+   "note": "One report calls it India's fastest-growing technical speciality by postings, helped by regulation."
+  },
+  "Cloud Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "Cloud remains one of the five core hiring areas."
+  },
+  "DevOps Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "DevOps stays on every major skills list."
+  },
+  "Site Reliability Engineer": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "Platform and reliability engineering command a premium."
+  },
+  "Backend Developer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand, with AI integration becoming a plus."
+  },
+  "Full Stack Developer": {
+   "momentum": "steady",
+   "outlook": 4,
+   "note": "Developers who can also add AI features are described as hard to find."
+  },
+  "Frontend Developer": {
+   "momentum": "selective",
+   "outlook": 3,
+   "note": "Competitive, especially for freshers."
+  },
+  "Software Engineer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Hiring is selective and favours people with real projects."
+  },
+  "QA Automation Engineer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand tied to delivery pipelines."
+  },
+  "Android Developer": {
+   "momentum": "selective",
+   "outlook": 3,
+   "note": "Steady, but competitive."
+  },
+  "Flutter Developer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Cross-platform skills stay useful for startups."
+  },
+  "Engineering Manager": {
+   "momentum": "selective",
+   "outlook": 3,
+   "note": "Few openings; most come from senior engineers."
+  },
+  "Technical Product Manager": {
+   "momentum": "rising",
+   "outlook": 4,
+   "note": "Product management is described as one of India's fast-growing roles."
+  },
+  "UI/UX Designer": {
+   "momentum": "steady",
+   "outlook": 3,
+   "note": "Steady demand, with more AI-assisted design work."
+  }
+ },
+ "skills": [
+  {
+   "skill": "agentic ai",
+   "momentum": "surging",
+   "score": 5,
+   "note": "Named a defining 2026 trend; recruiters screen for agent experience."
+  },
+  {
+   "skill": "rag",
+   "momentum": "surging",
+   "score": 5,
+   "note": "Retrieval-augmented generation is the standard way to ground LLMs in company data."
+  },
+  {
+   "skill": "llm",
+   "momentum": "surging",
+   "score": 5,
+   "note": "LLM experience is the most requested AI competency in recruiter searches."
+  },
+  {
+   "skill": "generative ai",
+   "momentum": "surging",
+   "score": 5,
+   "note": "Listed among the most sought-after skills in India hiring guides."
+  },
+  {
+   "skill": "prompt engineering",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Still listed, but employers now want broader AI-building skills."
+  },
+  {
+   "skill": "langchain",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Common in AI application job descriptions."
+  },
+  {
+   "skill": "langgraph",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Used for agent workflows."
+  },
+  {
+   "skill": "vector databases",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Core to retrieval-based AI systems."
+  },
+  {
+   "skill": "cybersecurity",
+   "momentum": "surging",
+   "score": 5,
+   "note": "Security hiring is driven by regulation and rising threats."
+  },
+  {
+   "skill": "kubernetes",
+   "momentum": "rising",
+   "score": 4,
+   "note": "A standard cloud-native skill."
+  },
+  {
+   "skill": "terraform",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Infrastructure as code is common in cloud and platform roles."
+  },
+  {
+   "skill": "aws",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Cloud computing is one of the five core hiring areas."
+  },
+  {
+   "skill": "docker",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Expected across DevOps, cloud and ML roles."
+  },
+  {
+   "skill": "dbt",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Used for modern warehouse analytics."
+  },
+  {
+   "skill": "snowflake",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Common in analytics engineering roles."
+  },
+  {
+   "skill": "python",
+   "momentum": "steady",
+   "score": 5,
+   "note": "Appears in nearly every AI and data skills list."
+  },
+  {
+   "skill": "sql",
+   "momentum": "steady",
+   "score": 5,
+   "note": "Always on the in-demand list for data roles."
+  },
+  {
+   "skill": "mlops",
+   "momentum": "rising",
+   "score": 4,
+   "note": "Named in most lists of in-demand AI skills."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Top 20 Trending IT Roles in India for 2026 (Antal Tech Jobs)",
+   "url": "https://www.antaltechjobs.in/blog/top-20-trending-it-roles-in-india-for-2026-what-the-hiring-data-reveals",
+   "used_for": "AI and GenAI roles leading LinkedIn's India fastest-growing list"
+  },
+  {
+   "title": "Highest-Demand IT Jobs in India in 2026 (Analytics Insight)",
+   "url": "https://www.analyticsinsight.net/jobs/highest-demand-it-jobs-in-india-in-2026-top-career-opportunities",
+   "used_for": "Cybersecurity growth and the regulation behind it"
+  },
+  {
+   "title": "Indian Tech Hiring Trends 2026 (Acciojob)",
+   "url": "https://acciojob.com/blogs/latest/indian-tech-hiring-trends-2026-what-job-seekers-must-know-to-stay-employable",
+   "used_for": "Hiring concentrating in AI, data, cloud, security; projects over grades"
+  },
+  {
+   "title": "AI skills recruiters screen for in 2026 (Pin)",
+   "url": "https://www.pin.com/blog/ai-skills-recruiters-screening",
+   "used_for": "LLM, agents and RAG as the most requested AI skills"
+  },
+  {
+   "title": "11 most in-demand AI skills in 2026 (TripleTen)",
+   "url": "https://tripleten.com/blog/posts/ai-skills",
+   "used_for": "Prompt engineering, RAG, MLOps, agentic AI on employer lists"
+  },
+  {
+   "title": "In-demand technical skills 2026 (Hirebase)",
+   "url": "https://beta.hirebase.org/blogs/in-demand-technical-skills-2026",
+   "used_for": "Cloud security and AI security as hard-to-fill specialisms"
+  }
+ ],
+ "disclaimer": "Momentum labels and the 1 to 5 outlook score are our editorial reading of the articles listed, not measured statistics. Most sources are secondary articles that summarise hiring data, so treat them as direction, not precision."
+}

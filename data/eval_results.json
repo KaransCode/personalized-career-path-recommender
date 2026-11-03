@@ -1,0 +1,55 @@
+{
+  "precision_at_3": "4/5",
+  "cases": [
+    {
+      "candidate": "resume_1.pdf",
+      "target_role": "Data Scientist",
+      "top3": [
+        "Data Scientist",
+        "Business Intelligence Analyst",
+        "Product Analyst"
+      ],
+      "hit": true
+    },
+    {
+      "candidate": "resume_2.pdf",
+      "target_role": "Machine Learning Engineer",
+      "top3": [
+        "DevOps Engineer",
+        "Engineering Manager",
+        "Computer Vision Engineer"
+      ],
+      "hit": false
+    },
+    {
+      "candidate": "resume_3.pdf",
+      "target_role": "Android Developer",
+      "top3": [
+        "Software Engineer",
+        "Android Developer",
+        "Backend Developer"
+      ],
+      "hit": true
+    },
+    {
+      "candidate": "synthetic:Database Administrator",
+      "target_role": "Database Administrator",
+      "top3": [
+        "Database Administrator",
+        "Data Engineer",
+        "Software Engineer"
+      ],
+      "hit": true
+    },
+    {
+      "candidate": "synthetic:DevOps Engineer",
+      "target_role": "DevOps Engineer",
+      "top3": [
+        "Cloud Engineer",
+        "DevOps Engineer",
+        "MLOps Engineer"
+      ],
+      "hit": true
+    }
+  ]
+}

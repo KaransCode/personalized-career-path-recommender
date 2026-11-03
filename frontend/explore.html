@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explore roles · Career Path Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="assets/theme.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap" id="app"></main>
+
+<script src="assets/app.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+CP.renderNav();
+const { h } = CP;
+const $ = (id) => document.getElementById(id);
+const app = $("app");
+
+const MAX_COMPARE = 3;
+const state = { q: "", category: "All", sort: "name", view: "grid", picked: new Set() };
+let roles = [], years = CP.getYears();
+const hasProfile = !!CP.getProfile();
+
+(async function init() {
+  app.replaceChildren(h("h1", {}, "Explore roles"), CP.skeletons(4, 140));
+  try { roles = (await CP.getRoles()).roles; }
+  catch (err) {
+    app.replaceChildren(h("h1", {}, "Explore roles"),
+      h("div", { class: "empty" }, h("p", { class: "err" }, err.message), h("button", { class: "btn", onclick: () => location.reload() }, "Try again")));
+    return;
+  }
+  buildShell();
+  renderView();
+})();
+
+function buildShell() {
+  const categories = ["All", ...CP.CATEGORIES.filter((c) => roles.some((r) => r.category === c))];
+
+  const search = h("input", { type: "search", placeholder: "Search roles, skills or tools", "aria-label": "Search roles", style: "flex:1;min-width:200px;max-width:380px" });
+  search.addEventListener("input", () => { state.q = search.value.trim().toLowerCase(); renderView(); });
+
+  const sortOpts = [["name", "Sort: A to Z"], ["pay", "Sort: highest pay"], ["trend", "Sort: most in demand"], ["skills", "Sort: most skills required"]];
+  if (hasProfile) sortOpts.push(["match", "Sort: best match for you"]);
+  const sort = h("select", { "aria-label": "Sort roles", onchange: (e) => { state.sort = e.target.value; renderView(); } }, sortOpts.map(([v, l]) => h("option", { value: v }, l)));
+
+  const viewSeg = h("div", { class: "seg", role: "group", "aria-label": "View" },
+    [["grid", "Cards"], ["map", "Map"]].map(([v, l]) => h("button", { type: "button", "aria-pressed": String(v === state.view), "data-v": v,
+      onclick: () => { state.view = v; viewSeg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v))); renderView(); } }, l)));
+
+  const chips = h("div", { class: "chips" }, categories.map((c) =>
+    h("button", { class: "chip filter", type: "button", "aria-pressed": String(c === state.category), "data-cat": c,
+      onclick: () => {
+        state.category = c;
+        chips.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === c)));
+        renderView();
+      } }, c)));
+
+  const exp = CP.expControl((y) => { years = y; renderView(); renderCompareDialog(false); });
+
+  app.replaceChildren(
+    h("h1", {}, "Explore roles"),
+    h("p", { class: "lede" }, `Browse all ${roles.length} roles we track. Open one for its overview, pay by experience, roadmap and career path, or tick up to three to compare side by side.`),
+    h("div", { class: "toolbar", style: "justify-content:flex-start" }, search, sort, viewSeg),
+    h("div", { style: "margin-bottom:14px" }, chips),
+    h("div", { style: "margin-bottom:22px" }, exp),
+    h("div", { id: "view" }),
+    h("div", { id: "tray" }),
+    h("dialog", { id: "dlg", "aria-labelledby": "dlgTitle" }));
+}
+
+/* ---------- filtering and sorting ---------- */
+function matches(role) {
+  if (state.category !== "All" && role.category !== state.category) return false;
+  if (!state.q) return true;
+  return [role.name, role.overview, ...role.required_skills, ...role.tools].join(" ").toLowerCase().includes(state.q);
+}
+function visibleRoles(sets) {
+  const ratio = (r) => { const c = CP.coverage(r.required_skills, sets); return c.have / c.total; };
+  const outlook = (r) => (r.trend ? r.trend.outlook : 0);
+  const sorters = {
+    name: (a, b) => a.name.localeCompare(b.name),
+    pay: (a, b) => { const pa = CP.payAt(a, years), pb = CP.payAt(b, years); return (pb ? pb[1] : -1) - (pa ? pa[1] : -1) || a.name.localeCompare(b.name); },
+    trend: (a, b) => outlook(b) - outlook(a) || a.name.localeCompare(b.name),
+    skills: (a, b) => b.required_skills.length - a.required_skills.length || a.name.localeCompare(b.name),
+    match: (a, b) => ratio(b) - ratio(a) || a.name.localeCompare(b.name),
+  };
+  return roles.filter(matches).sort(sorters[state.sort]);
+}
+
+function renderView() {
+  const sets = CP.skillSets(), list = visibleRoles(sets), view = $("view");
+  if (!list.length) { view.replaceChildren(h("div", { class: "empty" }, "No roles match that search. Try a different word or clear the filter.")); return; }
+  view.replaceChildren(state.view === "map" ? mapView(list) : h("div", { class: "grid" }, list.map((r) => card(r, sets))));
+}
+
+/* ---------- map view: how close you are against what it pays ---------- */
+function jitter(name, span) { let x = 0; for (const c of name) x = (x * 31 + c.charCodeAt(0)) % 997; return ((x % 100) / 100 - 0.5) * span; }
+function mapView(list) {
+  const sets = CP.skillSets();
+  const withPay = list.filter((r) => CP.payAt(r, years)), hidden = list.length - withPay.length;
+  const points = withPay.map((r) => {
+    const b = CP.payAt(r, years), cov = CP.coverage(r.required_skills, sets), pct = Math.round(((cov.have + cov.plan) / cov.total) * 100);
+    return { x: hasProfile ? Math.max(0, Math.min(100, pct + jitter(r.name, 5))) : (r.trend ? r.trend.outlook : 3) + jitter(r.name, 0.5),
+      y: (b[0] + b[1]) / 2, r: hasProfile ? 6 + (r.trend ? r.trend.outlook : 3) * 1.6 : 9, color: CP.catColor(r.category), href: CP.roleUrl(r.name),
+      label: `${r.name}: ${CP.fmtRange(b)}` + (hasProfile ? `, ${pct}% matched` : "") };
+  });
+  const cats = CP.CATEGORIES.filter((c) => withPay.some((r) => r.category === c));
+  const opts = hasProfile
+    ? { xLabel: "How much of the role you already match", xDomain: [0, 100], xTicks: [0, 25, 50, 75, 100], xFmt: (v) => `${v}%` }
+    : { xLabel: "Demand outlook (1 to 5)", xDomain: [1.4, 5.6], xTicks: [2, 3, 4, 5] };
+  return h("div", { class: "card-chart" },
+    h("h2", {}, hasProfile ? "Match against pay" : "Demand against pay"),
+    h("p", { class: "sub" }, (hasProfile
+      ? "Dots further right are roles you already match more of. Higher dots pay more. Bigger dots are in higher demand. "
+      : "Dots further right are in higher demand. Higher dots pay more. Upload a resume to plot your own match instead. ")
+      + `Pay is shown ${years === 0 ? "as a fresher" : `at ${CP.fmtYears(years)}`}. Dots are nudged slightly so they don’t overlap. Click one to open it.`),
+    Charts.scatter(points, { ...opts, yLabel: "Typical pay (₹ LPA, midpoint)", yFmt: (v) => `₹${v}L` }),
+    h("div", { class: "legend" }, cats.map((c) => h("span", {}, h("i", { style: `background:${CP.catColor(c)}` }), c))),
+    hidden ? h("p", { class: "note", style: "margin-top:12px" }, `${hidden} role${hidden === 1 ? " is" : "s are"} not shown because ${hidden === 1 ? "it usually needs" : "they usually need"} more experience than ${CP.fmtYears(years)}.`) : null);
+}
+
+/* ---------- cards ---------- */
+function card(role, sets) {
+  const picked = state.picked.has(role.name);
+  const pay = CP.payAt(role, years);
+  const cov = CP.coverage(role.required_skills, sets);
+
+  const box = h("input", { type: "checkbox", checked: picked, "aria-label": `Compare ${role.name}` });
+  const el = h("article", { class: "card" + (picked ? " picked" : "") },
+    h("div", { class: "card-top" },
+      h("h3", { class: "role-name" }, h("a", { href: CP.roleUrl(role.name) }, role.name)),
+      h("label", { class: "pick" }, box, "Compare")),
+    h("div", { style: "display:flex;gap:6px;flex-wrap:wrap" }, h("span", { class: "tag" }, role.category), CP.trendTag(role.trend)),
+    h("p", { class: "role-over" }, role.overview),
+    hasProfile ? [CP.rail(cov), h("p", { class: "small muted", style: "margin:0" }, `You have ${cov.have} of ${cov.total} skills`)] : null,
+    h("div", { class: "card-foot" },
+      h("span", { class: "role-pay", style: "margin:0" }, pay ? CP.fmtRange(pay) : "Needs more experience"),
+      h("a", { class: "small", href: CP.roleUrl(role.name), style: "color:var(--accent);text-decoration:none" }, "View details")));
+
+  box.addEventListener("change", () => {
+    if (box.checked) {
+      if (state.picked.size >= MAX_COMPARE) { box.checked = false; CP.toast(`You can compare up to ${MAX_COMPARE} roles`); return; }
+      state.picked.add(role.name);
+    } else state.picked.delete(role.name);
+    el.classList.toggle("picked", box.checked);
+    renderTray();
+  });
+  return el;
+}
+
+/* ---------- compare ---------- */
+function renderTray() {
+  const tray = $("tray");
+  tray.replaceChildren();
+  if (!state.picked.size) return;
+  const n = state.picked.size;
+  tray.append(h("div", { class: "tray" },
+    h("span", {}, `${n} of ${MAX_COMPARE} selected: ${[...state.picked].join(", ")}`),
+    h("button", { class: "btn small", type: "button", disabled: n < 2, onclick: () => renderCompareDialog(true) }, n < 2 ? "Pick one more to compare" : "Compare roles"),
+    h("button", { class: "btn ghost small", type: "button", onclick: () => { state.picked.clear(); renderTray(); renderView(); } }, "Clear")));
+}
+
+function renderCompareDialog(open) {
+  const dlg = $("dlg");
+  if (!dlg || (!open && !dlg.open)) return;
+  const picked = roles.filter((r) => state.picked.has(r.name));
+  if (picked.length < 2) { if (dlg.open) dlg.close(); return; }
+  const sets = CP.skillSets();
+  const row = (label, fn) => h("tr", {}, h("th", { scope: "row" }, label), picked.map((r) => h("td", {}, fn(r))));
+  dlg.replaceChildren(
+    h("div", { class: "dlg-head" }, h("h2", { id: "dlgTitle", style: "margin:0" }, "Compare roles"),
+      h("button", { class: "btn ghost small", type: "button", onclick: () => dlg.close() }, "Close")),
+    h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, ""), picked.map((r) => h("td", {}, h("a", { href: CP.roleUrl(r.name) }, r.name))))),
+      h("tbody", {},
+        row("Category", (r) => r.category),
+        row("Market", (r) => (r.trend ? `${r.trend.momentum[0].toUpperCase()}${r.trend.momentum.slice(1)}, outlook ${r.trend.outlook} of 5` : "No data")),
+        row(years === 0 ? "Pay as a fresher" : `Pay at ${CP.fmtYears(years)}`, (r) => CP.fmtRange(CP.payAt(r, years))),
+        row("Skills required", (r) => String(r.required_skills.length)),
+        hasProfile ? row("Your match", (r) => { const c = CP.coverage(r.required_skills, sets); return `${c.have} of ${c.total}`; }) : null,
+        row("Leads to", (r) => (r.leads_to.length ? r.leads_to.join(", ") : "Top of this ladder")),
+        row("Common tools", (r) => r.tools.join(", ")))));
+  if (open && !dlg.open) dlg.showModal();
+}
+</script>
+</body>
+</html>

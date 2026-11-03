@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your results · Career Path Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="assets/theme.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap" id="app"></main>
+
+<script src="assets/app.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+CP.renderNav();
+const { h } = CP;
+const $ = (id) => document.getElementById(id);
+const app = $("app");
+
+const state = { category: "All", sort: "fit", open: new Set() };
+let roles = [], recs = {}, trends = null, guide = null, years = CP.getYears();
+
+/* ---------- start-up ---------- */
+(async function init() {
+  const profile = CP.getProfile();
+  if (!profile) return showEmpty();
+  app.replaceChildren(h("h1", {}, "Your results"), CP.skeletons(4));
+  try {
+    const [r, rec, t, g] = await Promise.all([
+      CP.getRoles(),
+      CP.api(`/recommendations/${encodeURIComponent(profile.candidate_id)}?top=50`),
+      CP.getTrends().catch(() => null),
+      CP.getGuide().catch(() => null),
+    ]);
+    roles = r.roles; trends = t; guide = g;
+    rec.recommendations.forEach((x) => { recs[x.role] = x; });
+  } catch (err) {
+    if (err.status === 404) { CP.clearProfile(); return showEmpty("Your saved resume is no longer in the database. Upload it again."); }
+    return showError(err);
+  }
+  buildShell();
+  update();
+})();
+
+function showEmpty(msg) {
+  app.replaceChildren(h("h1", {}, "Your results"),
+    h("div", { class: "empty" },
+      h("p", {}, msg || "You haven’t analyzed a resume yet."),
+      h("a", { class: "btn", href: "index.html" }, "Upload a resume"), " ",
+      h("a", { class: "btn ghost", href: "explore.html" }, "Browse roles")));
+}
+function showError(err) {
+  app.replaceChildren(h("h1", {}, "Your results"),
+    h("div", { class: "empty" }, h("p", { class: "err" }, err.message), h("button", { class: "btn", onclick: () => location.reload() }, "Try again")));
+}
+
+/* ---------- page shell (built once) ---------- */
+function buildShell() {
+  const categories = ["All", ...CP.CATEGORIES.filter((c) => roles.some((r) => r.category === c))];
+
+  const chips = h("div", { class: "chips" }, categories.map((c) =>
+    h("button", { class: "chip filter", type: "button", "aria-pressed": String(c === state.category), "data-cat": c,
+      onclick: () => {
+        state.category = c;
+        chips.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === c)));
+        renderRoles();
+      } }, c)));
+
+  const sort = h("select", { "aria-label": "Sort roles", onchange: (e) => { state.sort = e.target.value; renderRoles(); } },
+    h("option", { value: "fit" }, "Sort: best fit"),
+    h("option", { value: "match" }, "Sort: most skills matched"),
+    h("option", { value: "pay" }, "Sort: highest pay"),
+    h("option", { value: "trend" }, "Sort: most in demand"));
+
+  const input = h("input", { type: "text", id: "newSkill", list: "skill-options", placeholder: "Add a skill we missed, e.g. tableau", "aria-label": "Add a skill" });
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addSkill(); } });
+
+  const exp = CP.expControl((y) => { years = y; renderStats(); renderTarget(); renderRoles(); });
+
+  app.replaceChildren(
+    h("div", { class: "toolbar" },
+      h("div", {}, h("h1", {}, "Your results"), h("p", { class: "lede", id: "sub", style: "margin:0" })),
+      h("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
+        h("button", { class: "btn ghost small", type: "button", onclick: () => window.print() }, "Save as PDF"),
+        h("a", { class: "btn ghost small", href: "index.html" }, "Upload another resume"))),
+    exp,
+    h("div", { class: "tiles", id: "tiles" }),
+    h("div", { id: "target" }),
+    h("section", { class: "cols chart-row", style: "gap:16px" },
+      h("div", { class: "card-chart" }, h("h2", {}, "Where you’re closest"), h("p", { class: "sub" }, "Best skill match in each field"), h("div", { id: "radar" })),
+      h("div", { class: "card-chart" }, h("h2", {}, "Learn these first"), h("p", { class: "sub" }, "Missing skills that appear in the most roles. Click one to plan it."), h("div", { id: "unlock" }))),
+    h("section", {},
+      h("h2", {}, "Your skills"),
+      h("ul", { class: "chips", id: "skills" }),
+      h("div", { class: "addskill" }, input, h("button", { class: "btn small", type: "button", onclick: addSkill }, "Add skill"), h("datalist", { id: "skill-options" })),
+      h("p", { class: "note", style: "margin-top:10px" }, "Missed a skill? Add it and everything below updates straight away.")),
+    h("section", {},
+      h("h2", {}, "Roles that fit you"),
+      h("div", { id: "banner" }),
+      h("div", { class: "toolbar" }, chips, sort),
+      h("ol", { class: "roles", id: "roles" })));
+}
+
+/* ---------- data helpers ---------- */
+function viewModels() {
+  const sets = CP.skillSets();
+  return roles.map((role) => {
+    const rec = recs[role.name];
+    return { role, cov: CP.coverage(role.required_skills, sets), fit: rec ? rec.score : 0, note: rec ? progressionNote(rec.explanation) : "" };
+  });
+}
+function progressionNote(expl) {
+  const rest = (expl || "").replace(/\.$/, "").split(";").slice(1).join(";").trim();
+  return rest ? rest.charAt(0).toUpperCase() + rest.slice(1) : "";
+}
+const ratio = (v) => (v.cov.have + v.cov.plan) / v.cov.total;
+const outlook = (v) => (v.role.trend ? v.role.trend.outlook : 0);
+const sorters = {
+  fit: (a, b) => b.fit - a.fit,
+  match: (a, b) => ratio(b) - ratio(a) || b.fit - a.fit,
+  pay: (a, b) => { const pa = CP.payAt(a.role, years), pb = CP.payAt(b.role, years); return (pb ? pb[1] : -1) - (pa ? pa[1] : -1) || b.fit - a.fit; },
+  trend: (a, b) => outlook(b) - outlook(a) || b.fit - a.fit,
+};
+const payLabel = () => (years === 0 ? "as a fresher" : `at ${CP.fmtYears(years)}`);
+const hotMark = (s) => (CP.isHotSkill(trends, s) ? h("span", { class: "up", title: "Trending skill", "aria-label": "trending" }, " ▲") : null);
+
+/* ---------- renderers ---------- */
+function update() { renderSub(); renderSkills(); renderStats(); renderTarget(); renderCharts(); renderBanner(); renderRoles(); }
+
+function renderSub() {
+  const n = (CP.getProfile().skills || []).length, extra = CP.getExtra().length;
+  $("sub").textContent = `Based on ${n} skill${n === 1 ? "" : "s"} from your resume${extra ? ` and ${extra} you added` : ""}. Move the experience slider to see pay estimates change.`;
+}
+
+function renderSkills() {
+  const p = CP.getProfile(), ul = $("skills");
+  ul.replaceChildren();
+  (p.skills || []).forEach((s) => ul.append(h("li", {}, h("span", { class: "chip" }, s, hotMark(s)))));
+  CP.getExtra().forEach((s) => ul.append(h("li", {}, h("span", { class: "chip added" }, s, hotMark(s),
+    h("button", { class: "x", type: "button", "aria-label": `Remove ${s}`, onclick: () => { CP.setExtra(CP.getExtra().filter((x) => x !== s)); update(); } }, "×")))));
+  if (!ul.children.length) ul.append(h("li", { class: "muted" }, "No known skills were detected. Add some below."));
+  const sets = CP.skillSets(), all = new Set();
+  roles.forEach((r) => r.required_skills.forEach((s) => { if (!sets.base.has(s)) all.add(s); }));
+  $("skill-options").replaceChildren(...[...all].sort().map((s) => h("option", { value: s })));
+}
+
+function addSkill() {
+  const input = $("newSkill"), s = input.value.trim().toLowerCase();
+  if (!s) return;
+  if (CP.skillSets().base.has(s)) { CP.toast("That skill is already on your list"); input.value = ""; return; }
+  CP.setExtra([...CP.getExtra(), s]);
+  CP.setLearn(CP.getLearn().filter((x) => x !== s));
+  input.value = "";
+  CP.toast(`Added ${s}`);
+  update();
+}
+
+function renderStats() {
+  const best = Object.values(recs).sort((a, b) => b.score - a.score)[0];
+  const bestRole = best && roles.find((r) => r.name === best.role);
+  const extra = CP.getExtra().length, base = CP.skillSets().base.size;
+  const tile = (k, v) => h("div", { class: "tile" }, h("div", { class: "k" }, k), h("div", { class: "v" }, v));
+  $("tiles").replaceChildren(
+    tile("Skills", extra ? `${base} (${extra} added)` : String(base)),
+    tile("Best match", bestRole ? h("a", { href: CP.roleUrl(bestRole.name) }, bestRole.name) : "None yet"),
+    tile("Fit score", best ? `${Math.round(best.score * 100)}%` : "None yet"),
+    tile(years === 0 ? "Pay as a fresher" : `Pay at ${CP.fmtYears(years)}`, bestRole ? CP.fmtRange(CP.payAt(bestRole, years)) : "None yet"));
+}
+
+function renderTarget() {
+  const box = $("target"), name = CP.getTarget();
+  box.replaceChildren();
+  const role = name && roles.find((r) => r.name === name);
+  if (!role) {
+    const sel = h("select", { "aria-label": "Choose a target role" }, [...roles].sort((a, b) => a.name.localeCompare(b.name)).map((r) => h("option", { value: r.name }, r.name)));
+    const best = Object.values(recs).sort((a, b) => b.score - a.score)[0];
+    if (best) sel.value = best.role;
+    box.append(h("div", { class: "banner", style: "margin-top:24px" }, h("span", {}, "Pick a target role to track your progress toward it."),
+      h("span", { style: "display:flex;gap:8px;flex-wrap:wrap" }, sel, h("button", { class: "btn small", type: "button", onclick: () => { CP.setTarget(sel.value); CP.toast(`Target set: ${sel.value}`); renderTarget(); } }, "Set target"))));
+    return;
+  }
+  const cov = CP.coverage(role.required_skills, CP.skillSets());
+  const steps = guide ? CP.buildRoadmap(role, CP.skillSets(), guide) : [];
+  const weeks = steps.reduce((a, s) => a + s.weeks, 0), pay = CP.payAt(role, years);
+  box.append(h("div", { class: "target-card" }, h("div", { class: "row" },
+    Charts.donut([{ value: cov.have, color: "var(--accent)" }, { value: cov.plan, color: "var(--accent)", opacity: 0.45 }, { value: cov.total - cov.have - cov.plan, color: "var(--line)" }],
+      [`${Math.round((cov.have / cov.total) * 100)}%`, "matched"]),
+    h("div", { style: "flex:1;min-width:220px" },
+      h("div", { class: "muted small" }, "Your target role"),
+      h("h2", { style: "margin:2px 0 6px;font-size:1.3rem" }, h("a", { href: CP.roleUrl(role.name), style: "text-decoration:none" }, role.name), " ", CP.trendTag(role.trend)),
+      h("p", { style: "margin:0 0 4px" }, `You have ${cov.have} of ${cov.total} required skills. ` + (cov.missing.length ? (weeks ? `About ${weeks} weeks of learning left at a steady pace.` : "") : "You have everything required.")),
+      h("p", { class: "muted small", style: "margin:0" }, `${CP.fmtRange(pay)} ${payLabel()}`),
+      h("div", { class: "mini-actions" },
+        h("a", { class: "btn small", href: CP.roleUrl(role.name) + "#roadmap" }, "Open roadmap"),
+        h("button", { class: "btn ghost small", type: "button", onclick: () => { CP.setTarget(null); renderTarget(); } }, "Change target"))))));
+}
+
+function renderCharts() {
+  const sets = CP.skillSets(), byCat = {};
+  roles.forEach((r) => { const c = CP.coverage(r.required_skills, sets); byCat[r.category] = Math.max(byCat[r.category] || 0, (c.have + c.plan) / c.total); });
+  const cats = CP.CATEGORIES.filter((c) => c in byCat);
+  $("radar").replaceChildren(Charts.radar(cats.map((c) => ({ label: c, value: byCat[c] }))));
+
+  const count = {};
+  roles.forEach((r) => r.required_skills.forEach((s) => { if (!sets.base.has(s)) count[s] = (count[s] || 0) + 1; }));
+  const top = Object.entries(count).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8);
+  $("unlock").replaceChildren(top.length
+    ? CP.hbars(top.map(([s, n]) => ({ label: s, value: n, max: top[0][1], text: `${n} role${n === 1 ? "" : "s"}`, planned: sets.learn.has(s), extra: hotMark(s),
+        title: sets.learn.has(s) ? "Remove from your learning plan" : "Add to your learning plan", onclick: () => { CP.toggleLearn(s); update(); } })))
+    : h("p", { class: "muted" }, "You already have every skill we track."));
+}
+
+function renderBanner() {
+  const learn = CP.getLearn(), box = $("banner");
+  box.replaceChildren();
+  if (!learn.length) return;
+  box.append(h("div", { class: "banner" },
+    h("span", {}, `Planning to learn: ${learn.join(", ")}`),
+    h("button", { class: "btn ghost small", type: "button", onclick: () => { CP.setLearn([]); update(); } }, "Reset plan")));
+}
+
+function renderRoles() {
+  const list = viewModels().filter((v) => state.category === "All" || v.role.category === state.category).sort(sorters[state.sort]);
+  $("roles").replaceChildren(...list.map(roleRow));
+}
+
+function roleRow(v) {
+  const { role, cov } = v;
+  const pay = CP.payAt(role, years);
+
+  let learn;
+  if (cov.missing.length) {
+    learn = h("details", { class: "learn" },
+      h("summary", {}, `Skills to learn (${cov.missing.length})`),
+      h("ul", { class: "chips" }, cov.missing.map((m) => h("li", {},
+        h("button", { class: "chip " + (m.planned ? "planned" : "todo"), type: "button", "aria-pressed": String(m.planned),
+          title: m.planned ? "Remove from your learning plan" : "Add to your learning plan",
+          onclick: () => { CP.toggleLearn(m.skill); update(); } }, (m.planned ? "✓ " : "+ ") + m.skill, hotMark(m.skill))))));
+    if (state.open.has(role.name)) learn.open = true;
+    learn.addEventListener("toggle", () => { learn.open ? state.open.add(role.name) : state.open.delete(role.name); });
+  } else {
+    learn = h("p", { class: "small", style: "color:var(--ok);margin:10px 0 0" }, "You have every required skill.");
+  }
+
+  const meta = `You have ${cov.have} of ${cov.total} skills${cov.plan ? `, ${cov.plan} planned` : ""}${v.note ? `. ${v.note}` : ""}`;
+  return h("li", { class: "role" },
+    h("div", { class: "role-head" },
+      h("h3", { class: "role-name" }, h("a", { href: CP.roleUrl(role.name) }, role.name), " ", CP.trendTag(role.trend)),
+      h("span", { class: "role-score" }, `Fit ${Math.round(v.fit * 100)}%`)),
+    h("p", { class: "role-meta" }, meta),
+    CP.rail(cov),
+    h("p", { class: "role-pay" }, pay ? `${CP.fmtRange(pay)} ${payLabel()}` : "Usually needs more experience than you have listed"),
+    h("p", { class: "role-over" }, role.overview),
+    learn);
+}
+</script>
+</body>
+</html>

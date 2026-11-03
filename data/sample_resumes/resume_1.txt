@@ -1,0 +1,24 @@
+Aarav Mehta
+
+Data Scientist
+Bengaluru, India | aarav.mehta.sample@example.com
+
+3 years of experience
+
+Summary
+Data Scientist with a background in machine learning and NLP, experienced
+in building end-to-end ML pipelines and deploying models to production.
+
+Experience
+Data Scientist - BrightGrid Analytics - 2022-2024
+Built machine learning models using Python, scikit-learn, XGBoost and
+TensorFlow for customer churn prediction. Used pandas and SQL for data
+processing. Deployed models via Flask REST API on AWS.
+
+Data Analyst - Insight Metrics - 2021-2022
+Performed data analysis and data visualization using Tableau and Power BI.
+Wrote SQL queries and Python scripts for ETL pipelines.
+
+Skills
+Python, Machine Learning, Deep Learning, NLP, scikit-learn, TensorFlow,
+XGBoost, Pandas, NumPy, SQL, Flask, AWS, Docker, Git, Tableau

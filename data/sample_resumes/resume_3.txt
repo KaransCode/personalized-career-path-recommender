@@ -1,0 +1,24 @@
+Rohan Verma
+
+Android Developer
+Chandigarh, India | rohan.verma.sample@example.com
+
+1.5 years of experience
+
+Summary
+Android Developer skilled in Kotlin and Jetpack Compose, building
+offline-first mobile applications with clean MVVM architecture.
+
+Experience
+Android Developer - AppNest Studio - 2023-2024
+Built Android apps using Kotlin, Jetpack Compose and Room Database
+following MVVM architecture. Integrated Firebase for authentication and
+SQLite for offline storage.
+
+Junior Developer - PixelCraft Software - 2022-2023
+Worked with Java and SQL on internal tooling. Used Git for version
+control and participated in Agile sprints.
+
+Skills
+Kotlin, Android Development, Jetpack Compose, Room Database, MVVM,
+Firebase, SQLite, Java, SQL, Git, Agile

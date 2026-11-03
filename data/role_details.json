@@ -1,0 +1,1087 @@
+{
+ "_meta": {
+  "currency": "INR",
+  "unit": "LPA",
+  "region": "India",
+  "bands": [
+   "0–2 yrs",
+   "2–5 yrs",
+   "5–8 yrs",
+   "8+ yrs"
+  ],
+  "note": "Indicative annual pay ranges (INR, lakhs per annum, total compensation before tax) for the Indian market. These are rough estimates for orientation, not sourced survey data; check current figures on sites such as AmbitionBox, Glassdoor or Levels.fyi."
+ },
+ "roles": {
+  "Data Analyst": {
+   "category": "Data",
+   "overview": "Turns raw business data into clear answers using SQL, spreadsheets and dashboards.",
+   "description": "Data analysts query databases, clean messy data and build reports that help teams decide what to do next. It is the most common entry point into the data field.",
+   "responsibilities": [
+    "Write SQL queries to pull and clean data",
+    "Build dashboards and recurring reports",
+    "Explain trends and anomalies to non-technical teams",
+    "Check data quality and document metric definitions"
+   ],
+   "tools": [
+    "SQL",
+    "Excel",
+    "Tableau",
+    "Power BI",
+    "Python"
+   ],
+   "salary_lpa": [
+    [
+     3,
+     7
+    ],
+    [
+     6,
+     12
+    ],
+    [
+     10,
+     18
+    ],
+    [
+     16,
+     28
+    ]
+   ]
+  },
+  "Business Intelligence Analyst": {
+   "category": "Data",
+   "overview": "Designs the dashboards and metrics a company uses to track how the business is doing.",
+   "description": "BI analysts model data for reporting, build self-serve dashboards and keep metrics consistent across teams. The work sits between analytics and data engineering.",
+   "responsibilities": [
+    "Model data for reporting and dashboards",
+    "Define and maintain company-wide metrics",
+    "Automate recurring reports",
+    "Work with stakeholders to turn questions into dashboards"
+   ],
+   "tools": [
+    "Power BI",
+    "Tableau",
+    "SQL",
+    "ETL tools",
+    "Excel"
+   ],
+   "salary_lpa": [
+    [
+     3.5,
+     7
+    ],
+    [
+     6,
+     12
+    ],
+    [
+     10,
+     17
+    ],
+    [
+     15,
+     26
+    ]
+   ]
+  },
+  "Data Engineer": {
+   "category": "Data",
+   "overview": "Builds the pipelines and storage that deliver reliable data to analysts and models.",
+   "description": "Data engineers move data from many sources into warehouses and lakes, and keep those pipelines fast and trustworthy. Strong programming and database skills matter most.",
+   "responsibilities": [
+    "Build and schedule ETL/ELT pipelines",
+    "Design warehouse and lake schemas",
+    "Monitor pipeline health and fix failures",
+    "Optimise queries and storage cost"
+   ],
+   "tools": [
+    "Python",
+    "SQL",
+    "Spark",
+    "Airflow",
+    "AWS"
+   ],
+   "salary_lpa": [
+    [
+     4,
+     9
+    ],
+    [
+     9,
+     18
+    ],
+    [
+     16,
+     30
+    ],
+    [
+     26,
+     45
+    ]
+   ]
+  },
+  "Data Scientist": {
+   "category": "Data",
+   "overview": "Uses statistics and machine learning to predict outcomes and uncover insights.",
+   "description": "Data scientists frame business problems as modelling problems, build and evaluate models, and communicate the results. Roles range from analysis-heavy to production ML.",
+   "responsibilities": [
+    "Explore data and engineer features",
+    "Train and evaluate predictive models",
+    "Run experiments and statistical tests",
+    "Present findings and recommendations"
+   ],
+   "tools": [
+    "Python",
+    "pandas",
+    "scikit-learn",
+    "SQL",
+    "Jupyter"
+   ],
+   "salary_lpa": [
+    [
+     4.5,
+     10
+    ],
+    [
+     9,
+     20
+    ],
+    [
+     18,
+     32
+    ],
+    [
+     28,
+     50
+    ]
+   ]
+  },
+  "Machine Learning Engineer": {
+   "category": "AI / ML",
+   "overview": "Takes machine learning models from notebooks to reliable production systems.",
+   "description": "ML engineers combine software engineering with modelling: they train models, build the serving code and keep them accurate over time.",
+   "responsibilities": [
+    "Train and tune models at scale",
+    "Build APIs and batch jobs that serve predictions",
+    "Monitor model quality and data drift",
+    "Collaborate with data scientists and backend teams"
+   ],
+   "tools": [
+    "Python",
+    "TensorFlow",
+    "PyTorch",
+    "Docker",
+    "AWS"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     12
+    ],
+    [
+     11,
+     24
+    ],
+    [
+     20,
+     38
+    ],
+    [
+     32,
+     60
+    ]
+   ]
+  },
+  "Deep Learning Engineer": {
+   "category": "AI / ML",
+   "overview": "Builds and trains neural networks for tasks like vision, speech and language.",
+   "description": "Deep learning engineers design network architectures, manage GPU training runs and optimise models for accuracy and speed.",
+   "responsibilities": [
+    "Design and train neural network architectures",
+    "Prepare and augment large datasets",
+    "Optimise models for latency and memory",
+    "Reproduce and adapt research papers"
+   ],
+   "tools": [
+    "PyTorch",
+    "TensorFlow",
+    "CUDA",
+    "Python",
+    "Weights & Biases"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     12
+    ],
+    [
+     11,
+     24
+    ],
+    [
+     20,
+     38
+    ],
+    [
+     32,
+     60
+    ]
+   ]
+  },
+  "NLP Engineer": {
+   "category": "AI / ML",
+   "overview": "Builds systems that understand and generate human language.",
+   "description": "NLP engineers work on search, chatbots, summarisation and classification, increasingly using large language models and fine-tuning.",
+   "responsibilities": [
+    "Build text classification and extraction pipelines",
+    "Fine-tune and evaluate language models",
+    "Design retrieval and prompt workflows",
+    "Measure quality with task-specific metrics"
+   ],
+   "tools": [
+    "Python",
+    "spaCy",
+    "Hugging Face",
+    "PyTorch",
+    "Vector databases"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     12
+    ],
+    [
+     11,
+     24
+    ],
+    [
+     20,
+     38
+    ],
+    [
+     32,
+     58
+    ]
+   ]
+  },
+  "Computer Vision Engineer": {
+   "category": "AI / ML",
+   "overview": "Builds systems that interpret images and video.",
+   "description": "Computer vision engineers work on detection, segmentation and recognition for products like inspection, medical imaging and autonomous systems.",
+   "responsibilities": [
+    "Train detection and segmentation models",
+    "Label, clean and augment image data",
+    "Deploy models to edge devices or the cloud",
+    "Benchmark accuracy against real-world conditions"
+   ],
+   "tools": [
+    "OpenCV",
+    "PyTorch",
+    "TensorFlow",
+    "Python",
+    "ONNX"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     12
+    ],
+    [
+     11,
+     23
+    ],
+    [
+     19,
+     36
+    ],
+    [
+     30,
+     55
+    ]
+   ]
+  },
+  "MLOps Engineer": {
+   "category": "AI / ML",
+   "overview": "Automates how models are deployed, monitored and retrained.",
+   "description": "MLOps engineers build the platform around machine learning: pipelines, registries, deployment and monitoring so teams can ship models safely.",
+   "responsibilities": [
+    "Build CI/CD and training pipelines for models",
+    "Containerise and deploy model services",
+    "Track experiments, versions and data lineage",
+    "Set up monitoring and automated retraining"
+   ],
+   "tools": [
+    "Docker",
+    "Kubernetes",
+    "Airflow",
+    "AWS",
+    "Git"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     11
+    ],
+    [
+     10,
+     22
+    ],
+    [
+     18,
+     34
+    ],
+    [
+     30,
+     52
+    ]
+   ]
+  },
+  "AI Research Engineer": {
+   "category": "AI / ML",
+   "overview": "Explores and implements new machine learning methods.",
+   "description": "Research engineers turn new ideas into working experiments, running ablations and scaling training. Roles often favour strong maths and a research track record.",
+   "responsibilities": [
+    "Implement and test new model ideas",
+    "Run large-scale experiments and ablations",
+    "Read and reproduce recent papers",
+    "Write up results for teams or publication"
+   ],
+   "tools": [
+    "PyTorch",
+    "Python",
+    "TensorFlow",
+    "LaTeX",
+    "Linux"
+   ],
+   "salary_lpa": [
+    [
+     6,
+     14
+    ],
+    [
+     13,
+     28
+    ],
+    [
+     24,
+     45
+    ],
+    [
+     38,
+     70
+    ]
+   ]
+  },
+  "Backend Developer": {
+   "category": "Software",
+   "overview": "Builds the servers, APIs and databases behind applications.",
+   "description": "Backend developers design services that store data and apply business logic, with a focus on reliability, security and performance.",
+   "responsibilities": [
+    "Design and build REST APIs",
+    "Model and query databases",
+    "Write tests and handle errors gracefully",
+    "Profile and improve performance"
+   ],
+   "tools": [
+    "Python",
+    "Java",
+    "SQL",
+    "Flask",
+    "Django"
+   ],
+   "salary_lpa": [
+    [
+     3.5,
+     8
+    ],
+    [
+     8,
+     18
+    ],
+    [
+     16,
+     30
+    ],
+    [
+     26,
+     48
+    ]
+   ]
+  },
+  "Full Stack Developer": {
+   "category": "Software",
+   "overview": "Builds both the user interface and the server side of web applications.",
+   "description": "Full stack developers take features from database to browser, which suits small teams and products that change quickly.",
+   "responsibilities": [
+    "Build responsive user interfaces",
+    "Create APIs and database schemas",
+    "Connect front end and back end end-to-end",
+    "Deploy and maintain the application"
+   ],
+   "tools": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "SQL",
+    "Git"
+   ],
+   "salary_lpa": [
+    [
+     3.5,
+     8
+    ],
+    [
+     8,
+     17
+    ],
+    [
+     15,
+     28
+    ],
+    [
+     24,
+     45
+    ]
+   ]
+  },
+  "Frontend Developer": {
+   "category": "Software",
+   "overview": "Builds the parts of websites and apps that people see and use.",
+   "description": "Frontend developers turn designs into fast, accessible interfaces and manage state, routing and data fetching on the client.",
+   "responsibilities": [
+    "Implement interfaces from design mockups",
+    "Make pages accessible and responsive",
+    "Manage application state and API calls",
+    "Test across browsers and devices"
+   ],
+   "tools": [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "CSS",
+    "Git"
+   ],
+   "salary_lpa": [
+    [
+     3,
+     7
+    ],
+    [
+     7,
+     15
+    ],
+    [
+     13,
+     25
+    ],
+    [
+     22,
+     40
+    ]
+   ]
+  },
+  "Android Developer": {
+   "category": "Mobile",
+   "overview": "Builds apps for Android phones and tablets.",
+   "description": "Android developers write native apps in Kotlin, handle offline data and device differences, and publish through the Play Store.",
+   "responsibilities": [
+    "Build screens with Jetpack Compose",
+    "Store data locally with Room or SQLite",
+    "Integrate APIs and Firebase services",
+    "Test on many devices and OS versions"
+   ],
+   "tools": [
+    "Kotlin",
+    "Jetpack Compose",
+    "Room",
+    "Firebase",
+    "Android Studio"
+   ],
+   "salary_lpa": [
+    [
+     3.5,
+     8
+    ],
+    [
+     8,
+     16
+    ],
+    [
+     14,
+     26
+    ],
+    [
+     22,
+     40
+    ]
+   ]
+  },
+  "Software Engineer": {
+   "category": "Software",
+   "overview": "Designs, builds and maintains software across the whole product.",
+   "description": "Software engineers solve problems in code, review each other's work and own features through design, delivery and support.",
+   "responsibilities": [
+    "Design and implement features",
+    "Review code and write tests",
+    "Debug production issues",
+    "Plan work with product and design teams"
+   ],
+   "tools": [
+    "Python",
+    "Java",
+    "Git",
+    "SQL",
+    "Agile"
+   ],
+   "salary_lpa": [
+    [
+     4,
+     9
+    ],
+    [
+     9,
+     19
+    ],
+    [
+     17,
+     32
+    ],
+    [
+     28,
+     50
+    ]
+   ]
+  },
+  "DevOps Engineer": {
+   "category": "Cloud & Ops",
+   "overview": "Connects development and operations so software ships quickly and safely.",
+   "description": "DevOps engineers automate builds, deployments and infrastructure, and keep systems observable and reliable.",
+   "responsibilities": [
+    "Build CI/CD pipelines",
+    "Manage infrastructure as code",
+    "Set up logging, metrics and alerts",
+    "Respond to and learn from incidents"
+   ],
+   "tools": [
+    "Docker",
+    "Kubernetes",
+    "Linux",
+    "AWS",
+    "Terraform"
+   ],
+   "salary_lpa": [
+    [
+     4,
+     9
+    ],
+    [
+     9,
+     18
+    ],
+    [
+     16,
+     30
+    ],
+    [
+     26,
+     45
+    ]
+   ]
+  },
+  "Cloud Engineer": {
+   "category": "Cloud & Ops",
+   "overview": "Designs and runs applications on cloud platforms.",
+   "description": "Cloud engineers provision networks, compute and storage on AWS, Azure or GCP, balancing cost, security and scalability.",
+   "responsibilities": [
+    "Provision and secure cloud resources",
+    "Design for scale and fault tolerance",
+    "Control cloud spend",
+    "Migrate workloads to the cloud"
+   ],
+   "tools": [
+    "AWS",
+    "Azure",
+    "GCP",
+    "Terraform",
+    "Linux"
+   ],
+   "salary_lpa": [
+    [
+     4,
+     9
+    ],
+    [
+     9,
+     18
+    ],
+    [
+     16,
+     30
+    ],
+    [
+     26,
+     46
+    ]
+   ]
+  },
+  "Database Administrator": {
+   "category": "Data",
+   "overview": "Keeps databases fast, secure and available.",
+   "description": "Database administrators tune queries, plan backups and recovery, manage access and handle upgrades for relational and NoSQL systems.",
+   "responsibilities": [
+    "Tune queries and indexes",
+    "Plan backups and disaster recovery",
+    "Manage users and permissions",
+    "Monitor capacity and performance"
+   ],
+   "tools": [
+    "SQL",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB",
+    "Linux"
+   ],
+   "salary_lpa": [
+    [
+     3,
+     6
+    ],
+    [
+     6,
+     12
+    ],
+    [
+     11,
+     20
+    ],
+    [
+     18,
+     32
+    ]
+   ]
+  },
+  "Product Analyst": {
+   "category": "Data",
+   "overview": "Uses data to understand how people use a product and what to build next.",
+   "description": "Product analysts measure funnels, retention and experiments, and help product managers decide where to invest.",
+   "responsibilities": [
+    "Define product metrics and funnels",
+    "Analyse experiments and A/B tests",
+    "Segment users and find drop-off points",
+    "Present insights to product teams"
+   ],
+   "tools": [
+    "SQL",
+    "Excel",
+    "Mixpanel",
+    "Tableau",
+    "Python"
+   ],
+   "salary_lpa": [
+    [
+     4,
+     8
+    ],
+    [
+     8,
+     16
+    ],
+    [
+     14,
+     26
+    ],
+    [
+     22,
+     38
+    ]
+   ]
+  },
+  "Engineering Manager": {
+   "category": "Management",
+   "overview": "Leads a team of engineers and is accountable for what they deliver.",
+   "description": "Engineering managers hire, coach and unblock engineers while aligning the team's work with company goals. Most come from several years as senior engineers.",
+   "responsibilities": [
+    "Hire, coach and grow engineers",
+    "Plan and prioritise team work",
+    "Remove blockers and manage risk",
+    "Work with product and other managers"
+   ],
+   "tools": [
+    "Jira",
+    "Git",
+    "Agile",
+    "Communication",
+    "Roadmapping"
+   ],
+   "salary_lpa": [
+    null,
+    null,
+    [
+     22,
+     38
+    ],
+    [
+     34,
+     65
+    ]
+   ]
+  },
+  "Generative AI Engineer": {
+   "category": "AI / ML",
+   "overview": "Builds products powered by large language models, from chat assistants to document search.",
+   "description": "Generative AI engineers connect LLMs to company data and tools, design prompts, add retrieval, and measure answer quality. The work blends software engineering with applied ML.",
+   "responsibilities": [
+    "Build LLM features with prompts, RAG and tool calling",
+    "Index documents into vector databases",
+    "Evaluate answers for accuracy and safety",
+    "Control cost, latency and reliability in production"
+   ],
+   "tools": [
+    "Python",
+    "LangChain",
+    "Vector databases",
+    "FastAPI",
+    "Docker"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     14
+    ],
+    [
+     12,
+     26
+    ],
+    [
+     22,
+     42
+    ],
+    [
+     35,
+     65
+    ]
+   ]
+  },
+  "Agentic AI Developer": {
+   "category": "AI / ML",
+   "overview": "Builds AI agents that plan, call tools and complete multi-step tasks.",
+   "description": "Agentic AI developers design workflows where models decide which tools to use, handle failures and ask for approval. Reliability, evaluation and guardrails matter as much as the model.",
+   "responsibilities": [
+    "Design agent workflows and tool interfaces",
+    "Add memory, retrieval and human approval steps",
+    "Test agents with repeatable evaluations",
+    "Monitor behaviour, cost and failures"
+   ],
+   "tools": [
+    "Python",
+    "LangGraph",
+    "LangChain",
+    "REST APIs",
+    "Git"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     13
+    ],
+    [
+     11,
+     25
+    ],
+    [
+     20,
+     40
+    ],
+    [
+     32,
+     60
+    ]
+   ]
+  },
+  "Analytics Engineer": {
+   "category": "Data",
+   "overview": "Turns raw warehouse data into clean, tested models that analysts can trust.",
+   "description": "Analytics engineers sit between data engineering and analysis: they model data in the warehouse, write tested transformations and document metrics.",
+   "responsibilities": [
+    "Build and test data models with SQL and dbt",
+    "Define shared metrics and documentation",
+    "Keep warehouse costs and runtimes under control",
+    "Work with analysts to unblock dashboards"
+   ],
+   "tools": [
+    "dbt",
+    "Snowflake",
+    "SQL",
+    "Git",
+    "Airflow"
+   ],
+   "salary_lpa": [
+    [
+     4,
+     9
+    ],
+    [
+     8,
+     17
+    ],
+    [
+     15,
+     28
+    ],
+    [
+     24,
+     40
+    ]
+   ]
+  },
+  "Cybersecurity Analyst": {
+   "category": "Security",
+   "overview": "Monitors systems for threats and responds when something goes wrong.",
+   "description": "Security analysts watch logs and alerts, investigate suspicious activity, patch weaknesses and help the company meet compliance rules.",
+   "responsibilities": [
+    "Monitor alerts in a SIEM and triage incidents",
+    "Investigate and contain security events",
+    "Run vulnerability scans and track fixes",
+    "Support audits and security awareness"
+   ],
+   "tools": [
+    "SIEM tools",
+    "Wireshark",
+    "Linux",
+    "Python",
+    "Nmap"
+   ],
+   "salary_lpa": [
+    [
+     3.5,
+     8
+    ],
+    [
+     7,
+     15
+    ],
+    [
+     13,
+     26
+    ],
+    [
+     22,
+     40
+    ]
+   ]
+  },
+  "QA Automation Engineer": {
+   "category": "Software",
+   "overview": "Writes automated tests that catch bugs before users do.",
+   "description": "QA automation engineers build test suites for web, API and mobile apps and plug them into the delivery pipeline.",
+   "responsibilities": [
+    "Write UI and API test automation",
+    "Maintain stable, fast test suites",
+    "Run tests in CI/CD and report failures",
+    "Work with developers on test strategy"
+   ],
+   "tools": [
+    "Selenium",
+    "Python",
+    "Postman",
+    "Git",
+    "Jenkins"
+   ],
+   "salary_lpa": [
+    [
+     3,
+     6.5
+    ],
+    [
+     6,
+     13
+    ],
+    [
+     11,
+     22
+    ],
+    [
+     18,
+     32
+    ]
+   ]
+  },
+  "Site Reliability Engineer": {
+   "category": "Cloud & Ops",
+   "overview": "Keeps large services fast and available using software engineering.",
+   "description": "SREs set reliability targets, build monitoring and automation, and lead incident reviews so outages become less likely over time.",
+   "responsibilities": [
+    "Define and track reliability targets",
+    "Build monitoring, alerting and automation",
+    "Lead incident response and reviews",
+    "Plan capacity and performance"
+   ],
+   "tools": [
+    "Kubernetes",
+    "Prometheus",
+    "Terraform",
+    "Python",
+    "Linux"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     11
+    ],
+    [
+     10,
+     22
+    ],
+    [
+     19,
+     36
+    ],
+    [
+     30,
+     55
+    ]
+   ]
+  },
+  "Data Architect": {
+   "category": "Data",
+   "overview": "Designs how a company's data is stored, connected and governed.",
+   "description": "Data architects choose platforms and design models so data stays consistent, secure and affordable as the company grows. The role usually follows several years in data engineering.",
+   "responsibilities": [
+    "Design warehouse, lake and streaming architecture",
+    "Set modelling and governance standards",
+    "Choose and evaluate data platforms",
+    "Guide engineering teams on design"
+   ],
+   "tools": [
+    "Snowflake",
+    "Spark",
+    "AWS",
+    "ER modelling",
+    "SQL"
+   ],
+   "salary_lpa": [
+    null,
+    [
+     12,
+     22
+    ],
+    [
+     22,
+     38
+    ],
+    [
+     35,
+     60
+    ]
+   ]
+  },
+  "Technical Product Manager": {
+   "category": "Product & Design",
+   "overview": "Decides what to build for a technical product and why.",
+   "description": "Technical product managers turn customer problems into plans engineers can build, using data and technical understanding to make trade-offs.",
+   "responsibilities": [
+    "Gather requirements and set priorities",
+    "Write specs and manage the roadmap",
+    "Track product metrics",
+    "Align engineering, design and business teams"
+   ],
+   "tools": [
+    "Jira",
+    "SQL",
+    "Figma",
+    "Analytics tools",
+    "Roadmapping"
+   ],
+   "salary_lpa": [
+    [
+     5,
+     10
+    ],
+    [
+     12,
+     24
+    ],
+    [
+     22,
+     40
+    ],
+    [
+     35,
+     65
+    ]
+   ]
+  },
+  "UI/UX Designer": {
+   "category": "Product & Design",
+   "overview": "Designs how apps and websites look, feel and flow.",
+   "description": "UI/UX designers research users, sketch flows, build prototypes and hand clean designs to developers.",
+   "responsibilities": [
+    "Research user needs and test prototypes",
+    "Create wireframes and user flows",
+    "Design consistent, accessible interfaces",
+    "Hand off designs to engineers"
+   ],
+   "tools": [
+    "Figma",
+    "Miro",
+    "Maze",
+    "HTML/CSS",
+    "Notion"
+   ],
+   "salary_lpa": [
+    [
+     3,
+     7
+    ],
+    [
+     6,
+     14
+    ],
+    [
+     12,
+     24
+    ],
+    [
+     20,
+     36
+    ]
+   ]
+  },
+  "Flutter Developer": {
+   "category": "Mobile",
+   "overview": "Builds Android and iOS apps from one Flutter codebase.",
+   "description": "Flutter developers write cross-platform apps in Dart, manage app state and connect to APIs and Firebase.",
+   "responsibilities": [
+    "Build screens and navigation in Flutter",
+    "Manage state and local storage",
+    "Integrate REST APIs and Firebase",
+    "Publish to the Play Store and App Store"
+   ],
+   "tools": [
+    "Flutter",
+    "Dart",
+    "Firebase",
+    "Git",
+    "Android Studio"
+   ],
+   "salary_lpa": [
+    [
+     3,
+     7
+    ],
+    [
+     7,
+     15
+    ],
+    [
+     13,
+     25
+    ],
+    [
+     20,
+     36
+    ]
+   ]
+  }
+ }
+}

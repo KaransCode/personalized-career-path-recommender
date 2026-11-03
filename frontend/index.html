@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Career Path Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="assets/theme.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap narrow">
+  <h1>Find roles that fit your skills</h1>
+  <p class="lede">Upload your resume to see which roles match, what each one involves, what it typically pays at your experience, and which skills to learn next.</p>
+
+  <label class="drop" id="drop">
+    <input type="file" id="resumeInput" accept="application/pdf">
+    <span>
+      <span class="drop-title">Drop your resume here</span>
+      <span class="drop-file" id="fileName">PDF only</span>
+    </span>
+    <span class="drop-action">Choose file</span>
+  </label>
+
+  <div class="actions">
+    <button class="btn" id="analyzeBtn" disabled>Analyze resume</button>
+    <a class="btn ghost" href="explore.html">Browse roles without a resume</a>
+    <span class="status" id="status" role="status" aria-live="polite"></span>
+  </div>
+
+  <div class="resume-card" id="resumeCard" hidden>
+    <span id="resumeText"></span>
+    <a class="btn small" href="results.html">View results</a>
+  </div>
+
+  <section id="trending" hidden style="margin-top:48px">
+    <h2>Trending now in India</h2>
+    <ul class="chips" id="trendChips"></ul>
+    <p class="small muted" style="margin-top:10px"><a href="trends.html">See the full market picture</a></p>
+  </section>
+
+  <div class="steps">
+    <div><h3>Upload</h3><p>We read the skills and experience from your PDF.</p></div>
+    <div><h3>Review</h3><p>See ranked roles, add skills we missed, and watch the matches update.</p></div>
+    <div><h3>Explore</h3><p>Open any role for its overview, pay by experience and career path.</p></div>
+  </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+CP.renderNav();
+const { h } = CP;
+CP.getRoles().then((d) => {
+  const hot = d.roles.filter((r) => r.trend && r.trend.momentum === "surging").concat(d.roles.filter((r) => r.trend && r.trend.momentum === "rising" && r.trend.outlook >= 4)).slice(0, 8);
+  if (!hot.length) return;
+  $("trendChips").replaceChildren(...hot.map((r) => h("li", {}, h("a", { class: "chip", href: CP.roleUrl(r.name), style: "text-decoration:none" }, r.name, h("span", { class: "up" }, "▲")))));
+  $("trending").hidden = false;
+}).catch(() => {});
+const $ = (id) => document.getElementById(id);
+const drop = $("drop"), input = $("resumeInput"), fileName = $("fileName"), btn = $("analyzeBtn"), statusEl = $("status");
+
+// Offer to continue if a resume was already analyzed in this browser
+const existing = CP.getProfile();
+if (existing) {
+  $("resumeText").textContent = `You already analyzed a resume (${(existing.skills || []).length} skills found).`;
+  $("resumeCard").hidden = false;
+}
+
+function setStatus(msg, { error = false, busy = false } = {}) {
+  statusEl.className = "status" + (error ? " error" : "");
+  statusEl.replaceChildren();
+  if (busy) statusEl.append(h("span", { class: "spinner" }));
+  statusEl.append(msg);
+}
+
+function chooseFile(file) {
+  if (!file) return;
+  if (!/\.pdf$/i.test(file.name)) { setStatus("That file isn’t a PDF. Choose a resume saved as .pdf.", { error: true }); return; }
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  fileName.textContent = file.name;
+  btn.disabled = false;
+  setStatus("");
+}
+input.addEventListener("change", () => chooseFile(input.files[0]));
+["dragenter", "dragover"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (ev) => chooseFile(ev.dataTransfer.files[0]));
+
+btn.addEventListener("click", async () => {
+  const file = input.files[0];
+  if (!file) return;
+  btn.disabled = true;
+  try {
+    setStatus("Reading your resume…", { busy: true });
+    const form = new FormData();
+    form.append("file", file);
+    const candidate = await CP.api("/upload-resume", { method: "POST", body: form });
+    CP.setProfile(candidate);
+    setStatus("Done. Opening your results…", { busy: true });
+    location.href = "results.html";
+  } catch (err) {
+    setStatus(err.message, { error: true });
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

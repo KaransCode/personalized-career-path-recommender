@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market trends · Career Path Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="assets/theme.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap" id="app"></main>
+
+<script src="assets/app.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+CP.renderNav();
+const { h } = CP;
+const $ = (id) => document.getElementById(id);
+const app = $("app");
+
+let roles = [], T = null, years = CP.getYears();
+const hasProfile = !!CP.getProfile();
+const label = (m) => m[0].toUpperCase() + m.slice(1);
+
+(async function init() {
+  app.replaceChildren(h("h1", {}, "Market trends"), CP.skeletons(3, 160));
+  try {
+    const [r, t] = await Promise.all([CP.getRoles(), CP.getTrends()]);
+    roles = r.roles; T = t;
+  } catch (err) {
+    app.replaceChildren(h("h1", {}, "Market trends"), h("div", { class: "empty" }, h("p", { class: "err" }, err.message), h("button", { class: "btn", onclick: () => location.reload() }, "Try again")));
+    return;
+  }
+  build();
+  renderAll();
+})();
+
+function build() {
+  const when = new Date(T.as_of).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  const exp = CP.expControl((y) => { years = y; renderBubble(); });
+  app.replaceChildren(
+    h("h1", {}, "Market trends"),
+    h("p", { class: "lede", style: "margin-bottom:6px" }, T.headline),
+    h("p", { class: "small muted", style: "margin-bottom:28px" }, `${T.region} market, data as of ${when}.`),
+    h("div", { id: "personal" }),
+    h("section", { class: "cols", style: "gap:16px" },
+      h("div", { class: "card-chart" }, h("h2", {}, "Market at a glance"), h("p", { class: "sub" }, `How the ${roles.length} roles we track are moving`), h("div", { id: "glance" })),
+      h("div", { class: "card-chart" }, h("h2", {}, "Hottest roles"), h("p", { class: "sub" }, "Outlook score out of 5. Click to open a role."), h("div", { id: "hotRoles" }))),
+    h("section", { class: "card-chart" }, h("h2", {}, "Rising skills"), h("p", { class: "sub" }, hasProfile ? "Click a skill you want to learn to add it to your plan." : "Skills employers are asking for most right now."), h("div", { id: "hotSkills" })),
+    h("section", { class: "card-chart" },
+      h("h2", {}, "Pay against demand"),
+      h("p", { class: "sub" }, "Where the best-paid roles meet strong demand. Dots are nudged up or down a little so they don’t overlap. Click a dot to open the role."),
+      h("div", { style: "margin-bottom:12px" }, exp), h("div", { id: "bubble" }), h("div", { class: "legend", id: "bubbleLegend" })),
+    h("section", {}, h("h2", {}, "What’s driving it"),
+      h("div", { class: "grid" }, T.themes.map((t) => h("div", { class: "card" }, h("h3", { style: "font-size:1rem" }, t.title), h("p", { class: "role-over" }, t.text))))),
+    h("section", {}, h("h2", {}, "Sources"),
+      h("ul", { class: "list" }, T.sources.map((s) => h("li", {}, h("a", { href: s.url, target: "_blank", rel: "noopener noreferrer" }, s.title), h("span", { class: "muted small" }, ` (used for: ${s.used_for})`)))),
+      h("p", { class: "note" }, T.disclaimer)));
+}
+
+function renderAll() { renderPersonal(); renderGlance(); renderHotRoles(); renderHotSkills(); renderBubble(); }
+
+function renderPersonal() {
+  const box = $("personal");
+  box.replaceChildren();
+  if (!hasProfile) return;
+  const sets = CP.skillSets(), hot = T.skills.filter((s) => s.momentum === "surging" || s.momentum === "rising");
+  const have = hot.filter((s) => sets.base.has(s.skill)), miss = hot.filter((s) => !sets.base.has(s.skill));
+  box.append(h("section", { class: "target-card", style: "margin:0 0 36px" },
+    h("h2", { style: "margin-bottom:8px" }, "How you line up"),
+    h("p", { style: "margin:0 0 8px" }, have.length ? `You already have ${have.length} of ${hot.length} trending skills: ${have.map((s) => s.skill).join(", ")}.` : `You don’t have any of the ${hot.length} trending skills on your list yet.`),
+    miss.length ? h("div", {}, h("p", { class: "small muted", style: "margin:0 0 8px" }, "Worth considering (click to add to your plan):"),
+      h("ul", { class: "chips" }, miss.map((s) => h("li", {}, h("button", { type: "button", class: "chip " + (sets.learn.has(s.skill) ? "planned" : "todo"), "aria-pressed": String(sets.learn.has(s.skill)), title: s.note,
+        onclick: () => { CP.toggleLearn(s.skill); renderPersonal(); renderHotSkills(); } }, (sets.learn.has(s.skill) ? "✓ " : "+ ") + s.skill))))) : null));
+}
+
+function renderGlance() {
+  const order = ["surging", "rising", "steady", "selective"], colors = { surging: "var(--c1)", rising: "var(--c3)", steady: "var(--c5)", selective: "var(--c8)" };
+  const counts = Object.fromEntries(order.map((m) => [m, roles.filter((r) => r.trend && r.trend.momentum === m).length]));
+  $("glance").replaceChildren(h("div", { class: "donut-wrap" },
+    Charts.donut(order.map((m) => ({ value: counts[m], color: colors[m] })), [String(roles.length), "roles"]),
+    h("div", { class: "legend", style: "flex-direction:column;margin:0" }, order.map((m) => h("span", {}, h("i", { style: `background:${colors[m]}` }), `${label(m)}: ${counts[m]}`)))),
+    h("p", { class: "small muted", style: "margin:18px 0 0" }, `Surging: ${roles.filter((r) => r.trend && r.trend.momentum === "surging").map((r) => r.name).join(", ")}.`),
+    h("p", { class: "small muted", style: "margin:8px 0 0" }, `Selective: ${roles.filter((r) => r.trend && r.trend.momentum === "selective").map((r) => r.name).join(", ")}. Demand exists, but hiring is more competitive.`));
+}
+
+function renderHotRoles() {
+  const top = roles.filter((r) => r.trend).sort((a, b) => b.trend.outlook - a.trend.outlook || a.name.localeCompare(b.name)).slice(0, 10);
+  $("hotRoles").replaceChildren(CP.hbars(top.map((r) => ({ label: r.name, value: r.trend.outlook, max: 5, text: label(r.trend.momentum), href: CP.roleUrl(r.name), color: CP.catColor(r.category) }))));
+}
+
+function renderHotSkills() {
+  const sets = CP.skillSets();
+  const list = [...T.skills].sort((a, b) => b.score - a.score || a.skill.localeCompare(b.skill));
+  $("hotSkills").replaceChildren(CP.hbars(list.map((s) => ({
+    label: s.skill, value: s.score, max: 5, text: label(s.momentum), planned: sets.learn.has(s.skill),
+    extra: hasProfile && sets.base.has(s.skill) ? h("span", { class: "tag accent", style: "margin-left:8px" }, "You have it") : null,
+    title: s.note, onclick: hasProfile && !sets.base.has(s.skill) ? () => { CP.toggleLearn(s.skill); renderPersonal(); renderHotSkills(); } : null }))));
+}
+
+function renderBubble() {
+  const jit = (name) => { let x = 0; for (const c of name) x = (x * 31 + c.charCodeAt(0)) % 997; return ((x % 100) / 100 - 0.5) * 0.6; };
+  const withPay = roles.filter((r) => r.trend && CP.payAt(r, years)), hidden = roles.length - withPay.length;
+  const pts = withPay.map((r) => { const b = CP.payAt(r, years); return { x: (b[0] + b[1]) / 2, y: r.trend.outlook + jit(r.name), r: 8, color: CP.catColor(r.category),
+    href: CP.roleUrl(r.name), label: `${r.name}: ${CP.fmtRange(b)}, ${r.trend.momentum}` }; });
+  const cats = CP.CATEGORIES.filter((c) => withPay.some((r) => r.category === c));
+  $("bubble").replaceChildren(Charts.scatter(pts, { xLabel: `Typical pay (₹ LPA, midpoint) ${years === 0 ? "as a fresher" : `at ${CP.fmtYears(years)}`}`, yLabel: "Demand outlook (1 to 5)",
+    xFmt: (v) => `₹${v}L`, yDomain: [1.4, 5.6], yTicks: [2, 3, 4, 5] }));
+  $("bubbleLegend").replaceChildren(...cats.map((c) => h("span", {}, h("i", { style: `background:${CP.catColor(c)}` }), c)),
+    ...(hidden ? [h("span", {}, `${hidden} role${hidden === 1 ? "" : "s"} hidden: need more experience`)] : []));
+}
+</script>
+</body>
+</html>
